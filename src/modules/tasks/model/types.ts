@@ -1,4 +1,5 @@
 export type TaskId = string;
+
 export enum Priority { High = 'high', Medium = 'medium', Low = 'low'}
 
 export const TaskStatusLabel: Record<Priority, string> = {
@@ -25,5 +26,5 @@ export interface Task {
 
 export const defaultTaskId: TaskId = "0";
 
-export type NewTask   = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
+export type NewTask = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
 export type TaskPatch = Partial<Omit<Task, 'id' | 'createdAt' | 'updatedAt'>>;

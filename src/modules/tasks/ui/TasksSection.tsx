@@ -22,7 +22,6 @@ export const TasksSection = () => {
 	const onCreate = data => {
 		create(data);
 		setShowCreate(false)
-
 	}
 
 	return (
