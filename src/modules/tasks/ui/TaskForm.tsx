@@ -115,7 +115,7 @@ export const TaskForm = ({
 								</div>
 							</div>
 
-							<div className="grid gap-2">
+							<div className="grid gap-3">
 								<Label htmlFor="due-date">Due date</Label>
 
 								<div className="flex items-center gap-3">

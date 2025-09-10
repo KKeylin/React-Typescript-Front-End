@@ -21,7 +21,7 @@ const Index = () => {
   // TODO: Implement state management for tasks
   const [testStarted, setTestStarted] = useState(true);
   
-  const { timeRemaining, isTimeUp, formatTime, startTimer, resetTimer } = useTimer(3600); // 60 minutes
+  const { timeRemaining, isTimeUp, formatTime, startTimer, resetTimer } = useTimer(1749); // 60 minutes
   
   const handleStartTest = () => {
     setTestStarted(true);
@@ -32,6 +32,7 @@ const Index = () => {
     setTestStarted(false);
     resetTimer();
   };
+  startTimer()
 
   return (
     <div className="min-h-screen bg-background text-foreground">

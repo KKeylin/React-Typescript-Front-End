@@ -112,7 +112,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 								</div>
 
 								{task.description && (
-									<p className="mt-1 text-sm text-muted-foreground whitespace-pre-line ">
+									<p className="mt-1 text-sm text-muted-foreground whitespace-pre-line break-words grid grid-cols-[minmax(0,1fr)_auto] w-full">
 										{task.description}
 									</p>
 								)}
