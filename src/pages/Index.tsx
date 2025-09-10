@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, CheckCircle2, Plus, FileText, AlertTriangle } from "lucide-react";
+import { Clock, FileText, AlertTriangle } from "lucide-react";
 import { useTimer } from "@/hooks/useTimer";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { TasksSection } from "@/modules/tasks";
 
 // TODO: Define proper TypeScript interfaces for Task
 // interface Task {
@@ -18,9 +19,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
   // TODO: Implement state management for tasks
-  const [tasks, setTasks] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [testStarted, setTestStarted] = useState(false);
+  const [testStarted, setTestStarted] = useState(true);
   
   const { timeRemaining, isTimeUp, formatTime, startTimer, resetTimer } = useTimer(3600); // 60 minutes
   
@@ -32,8 +31,6 @@ const Index = () => {
   const handleResetTest = () => {
     setTestStarted(false);
     resetTimer();
-    setTasks([]);
-    setShowForm(false);
   };
 
   return (
@@ -171,63 +168,7 @@ const Index = () => {
           {/* Main Application Area */}
           <div className="lg:col-span-2">
             <div className="space-y-6">
-              {/* Action Bar */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-semibold">My Tasks</h2>
-                  <p className="text-muted-foreground">
-                    {tasks.length === 0 ? "No tasks yet" : `${tasks.length} tasks`}
-                  </p>
-                </div>
-                <Button 
-                  onClick={() => setShowForm(!showForm)}
-                  className="bg-primary hover:bg-primary/90"
-                  disabled={isTimeUp}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Task
-                </Button>
-              </div>
-
-              {/* TODO: Add TaskForm component here when showForm is true */}
-              {showForm && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Add New Task</CardTitle>
-                    <CardDescription>Create a new task to manage your work</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      🚧 TODO: Implement the TaskForm component here
-                    </p>
-                    <p className="text-sm mt-2 text-muted-foreground">
-                      Form should include: title, description, priority, due date
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Task List Area */}
-              <div className="space-y-4">
-                {tasks.length === 0 ? (
-                  <Card className="border-dashed">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                      <CheckCircle2 className="w-12 h-12 text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">No tasks yet</h3>
-                      <p className="text-muted-foreground text-center max-w-sm">
-                        Get started by creating your first task. Click the "Add Task" button above.
-                      </p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid gap-4">
-                    {/* TODO: Map through tasks and render TaskCard components */}
-                    <p className="text-muted-foreground">
-                      🚧 TODO: Implement TaskCard components here
-                    </p>
-                  </div>
-                )}
-              </div>
+              <TasksSection />
             </div>
           </div>
         </div>
