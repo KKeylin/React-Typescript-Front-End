@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 import tagger from "lovable-ci"
 
 // https://vitejs.dev/config/
+const repo = "React-Typescript-Front-End";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
@@ -21,4 +22,5 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  base: process.env.GITHUB_ACTIONS ? `/${repo}/` : "/",
 }));
