@@ -19,6 +19,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon, X } from "lucide-react";
 import { toYMD, ymdToLocalDate } from "@/lib/date";
+import { DESC_MAX, TITLE_MAX } from "@/modules/tasks/constants.ts";
 
 interface TaskFormProps {
 	tasks: Task[];
@@ -49,7 +50,14 @@ export const TaskForm = ({
 		setCurrentValue(defaultNewTask());
 	}, [setCurrentValue, tasks]);
 
-	const canSubmit = currentValue.title.trim().length > 0;
+	const titleLen = currentValue.title?.length ?? 0;
+	const descLen = (currentValue.description ?? '').length;
+
+	const titleTooLong = titleLen > TITLE_MAX;
+	const descTooLong = descLen > DESC_MAX;
+	const titleEmpty = currentValue.title.trim().length === 0;
+
+	const canSubmit = !titleEmpty && !titleTooLong && !descTooLong;
 
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -86,7 +94,7 @@ export const TaskForm = ({
 			<CardContent>
 				<div className="space-y-4">
 					<div>
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+						<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start mb-2">
 							<div className="sm:col-span-2">
 								<Label htmlFor="title">Title *</Label>
 								<Input
@@ -96,6 +104,15 @@ export const TaskForm = ({
 									onChange={handleInputChange("title")}
 									required
 								/>
+
+								<div className="flex justify-between text-xs">
+									<span className={titleEmpty ? "text-destructive" : "text-muted-foreground"}>
+										{titleEmpty ? "Title is required" : " "}
+									</span>
+																<span className={titleTooLong ? "text-destructive" : "text-muted-foreground"}>
+										{titleLen}/{TITLE_MAX}
+									</span>
+								</div>
 							</div>
 
 							<div className="grid gap-2">
@@ -156,6 +173,11 @@ export const TaskForm = ({
 								rows={3}
 								onChange={handleInputChange("description")}
 							/>
+							<div id="description-help" className="flex justify-end text-xs">
+								<span className={descTooLong ? "text-destructive" : "text-muted-foreground"}>
+									{descLen}/{DESC_MAX}
+								</span>
+							</div>
 						</div>
 						<div className="flex flex-wrap items-center gap-4 md:gap-6 md:justify-between mb-4">
 							<div className="flex items-center gap-4 md:order-0 order-1">
@@ -168,7 +190,7 @@ export const TaskForm = ({
 							<div className="flex items-center gap-2 md:order-2 order-2">
 								<div className="flex space-x-2 items-center">
 									<Label htmlFor="is-completeis">Complete</Label>
-									<Switch id="is-complete"
+									<Switch id="airplane-mode"
 													onCheckedChange={() => handleChange("isComplete", !currentValue.isComplete)}
 													checked={currentValue.isComplete}/>
 								</div>

@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { ymdToLocalDate } from "@/lib/date";
 import { getDueInfo } from "@/lib/date";
+import { DESC_MAX, TITLE_MAX } from "@/modules/tasks/constants.ts";
 
 interface TaskCardProps {
 	task: Task;
@@ -52,7 +53,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 		[handleChange]
 	);
 
-	const canSubmit = currentValue.title.trim().length > 0;
+	const titleLen = currentValue.title?.length ?? 0;
+	const descLen = (currentValue.description ?? '').length;
+
+	const titleTooLong = titleLen > TITLE_MAX;
+	const descTooLong = descLen > DESC_MAX;
+	const titleEmpty = currentValue.title.trim().length === 0;
+
+	const canSubmit = !titleEmpty && !titleTooLong && !descTooLong;
 
 	const handleSubmit = useCallback(
 		(e?: React.FormEvent) => {
@@ -86,12 +94,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 					<div className="flex flex-col gap-3">
 						<div className="flex items-start justify-between gap-3">
 							<div className="w-full">
-								<div className="flex items-center gap-2 flex-wrap justify-between">
-									<h3 className="text-lg font-semibold truncate">{task.title}</h3>
+
+
+								<div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 w-full">
+									<h3 className="order-2 sm:order-1 flex-1 min-w-0 sm:max-w-[75%] break-words">{task.title}</h3>
 									{task.dueDate && (
 										<Badge
 											variant={(due?.past ? "destructive" : "secondary") as "destructive" | "secondary"}
-											className="inline-flex items-center gap-1"
+											className="order-4 sm:order-2 shrink-0 sm:ml-auto"
 										>
 											<CalendarIcon className="h-3.5 w-3.5 shrink-0"/>
 											<span className={due?.past ? "font-medium" : ""}>
@@ -102,7 +112,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 								</div>
 
 								{task.description && (
-									<p className="mt-1 text-sm text-muted-foreground whitespace-pre-line">
+									<p className="mt-1 text-sm text-muted-foreground whitespace-pre-line ">
 										{task.description}
 									</p>
 								)}
@@ -157,7 +167,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 				) : (
 					<form onSubmit={handleSubmit} onKeyDown={onKeyDown} className="flex flex-col gap-4">
 
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+						<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
 							<div className="sm:col-span-2">
 								<Label htmlFor={`title-${task.id}`} className="">Title *</Label>
 								<Input
@@ -168,20 +178,29 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 									required
 									value={currentValue.title}
 								/>
-							</div>
 
-							<div className="grid gap-2">
-								<Label htmlFor="due-date">Due date</Label>
+								<div className="flex justify-between text-xs">
+									<span className={titleEmpty ? "text-destructive" : "text-muted-foreground"}>
+										{titleEmpty ? "Title is required" : " "}
+									</span>
+									<span className={titleTooLong ? "text-destructive" : "text-muted-foreground"}>
+										{titleLen}/{TITLE_MAX}
+									</span>
+								</div>
+						</div>
 
-								<div className="flex items-center gap-2">
-									<Popover open={dueOpen} onOpenChange={setDueOpen}>
-										<PopoverTrigger asChild>
-											<Button
-												id="due-date"
-												variant="outline"
-												className="w-40 justify-start"
-											>
-												<CalendarIcon className="mr-2 h-4 w-4 shrink-0"/>
+						<div className="grid gap-2">
+							<Label htmlFor="due-date">Due date</Label>
+
+							<div className="flex items-center gap-2">
+								<Popover open={dueOpen} onOpenChange={setDueOpen}>
+									<PopoverTrigger asChild>
+										<Button
+											id="due-date"
+											variant="outline"
+											className="w-40 justify-start"
+										>
+											<CalendarIcon className="mr-2 h-4 w-4 shrink-0"/>
 												{currentValue.dueDate ? currentValue.dueDate : <span>Pick a date</span>}
 											</Button>
 										</PopoverTrigger>
@@ -225,6 +244,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 								onChange={handleInputChange("description")}
 								placeholder="Optional details"
 							/>
+							<div id="description-help" className="flex justify-end text-xs">
+								<span className={descTooLong ? "text-destructive" : "text-muted-foreground"}>
+									{descLen}/{DESC_MAX}
+								</span>
+							</div>
 						</div>
 
 						<div className="flex flex-wrap items-center gap-4 md:gap-6 md:justify-between">
