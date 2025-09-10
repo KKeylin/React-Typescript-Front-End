@@ -95,7 +95,7 @@ export const TaskForm = ({
 				<div className="space-y-4">
 					<div>
 						<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start mb-2">
-							<div className="sm:col-span-2">
+							<div className="sm:col-span-2 grid gap-3 mb-4">
 								<Label htmlFor="title">Title *</Label>
 								<Input
 									id="title"
@@ -118,7 +118,7 @@ export const TaskForm = ({
 							<div className="grid gap-2">
 								<Label htmlFor="due-date">Due date</Label>
 
-								<div className="flex items-center gap-2">
+								<div className="flex items-center gap-3">
 									<Popover open={dueOpen} onOpenChange={setDueOpen}>
 										<PopoverTrigger asChild>
 											<Button
@@ -165,7 +165,7 @@ export const TaskForm = ({
 							</div>
 						</div>
 
-						<div className="grid gap-2 mb-4">
+						<div className="grid gap-3 mb-4">
 							<Label htmlFor="description">Description</Label>
 							<Textarea
 								id="description"

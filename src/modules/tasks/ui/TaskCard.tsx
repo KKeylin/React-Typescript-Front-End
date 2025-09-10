@@ -168,7 +168,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 					<form onSubmit={handleSubmit} onKeyDown={onKeyDown} className="flex flex-col gap-4">
 
 						<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
-							<div className="sm:col-span-2">
+							<div className="sm:col-span-2 grid gap-3 mb-4">
 								<Label htmlFor={`title-${task.id}`} className="">Title *</Label>
 								<Input
 									id={`title-${task.id}`}
@@ -189,10 +189,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 								</div>
 						</div>
 
-						<div className="grid gap-2">
+						<div className="grid gap-3">
 							<Label htmlFor="due-date">Due date</Label>
 
-							<div className="flex items-center gap-2">
+							<div className="flex items-center gap-3">
 								<Popover open={dueOpen} onOpenChange={setDueOpen}>
 									<PopoverTrigger asChild>
 										<Button

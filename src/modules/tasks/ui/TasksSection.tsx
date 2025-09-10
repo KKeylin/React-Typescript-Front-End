@@ -7,7 +7,7 @@ import { useCallback, useState } from "react";
 import { TaskPatch } from "@/modules/tasks";
 import { Card, CardContent } from "@/components/ui/card";
 
-export const TasksSection: React.FC = () => {
+export const TasksSection = () => {
 	const {tasks, create, update, remove} = useTasks()
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [showCreate, setShowCreate] = useState(false)
@@ -18,6 +18,12 @@ export const TasksSection: React.FC = () => {
 		update(id, patch);
 		setEditingId(null);
 	}, [update]);
+
+	const onCreate = data => {
+		create(data);
+		setShowCreate(false)
+
+	}
 
 	return (
 		<div>
@@ -39,13 +45,13 @@ export const TasksSection: React.FC = () => {
 			{showCreate && (
 				<TaskForm
 					tasks={tasks}
-					onCreate={(data) => create(data)}
+					onCreate={onCreate}
 					onCancel={() => setShowCreate(false)}
 				/>)}
 
 			{tasks.length === 0 ?
 				(
-					<Card className="border-dashed">
+					<Card className="border-dashed mt-6">
 						<CardContent className="flex flex-col items-center justify-center py-12">
 							<CheckCircle2 className="w-12 h-12 text-muted-foreground mb-4"/>
 							<h3 className="text-lg font-medium mb-2">No tasks yet</h3>

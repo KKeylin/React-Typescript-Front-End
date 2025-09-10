@@ -1,3 +1,55 @@
+## Implementation Notes
+
+**TL;DR**  
+A minimal yet thoughtful task tracker with inline editing, local persistence, and careful UX. I prioritized clear structure, predictable state, and resilient layout/datepicker handling over piling on features.
+
+### Goals
+- Keep the domain model simple and explicit.
+- Deliver a pleasant UX (inline edit, sane validation, responsive layout).
+- Avoid common pitfalls (timezone drift for dates, long-title layout blowups).
+
+### Architecture
+- **Module `modules/tasks`**
+  - `model/` — types + a small repository over `localStorage` (pure functions).
+  - `hooks/` — `useTasks` as a React adapter (state/effects, stable callbacks).
+  - `ui/` — `TaskCard` (inline edit), `TaskForm` (create), `TasksSection` (facade).
+- **Page** — thin composition (`<TasksSection />`), no business logic.
+
+### Data & Persistence
+- `Task` = `{ id, title, description?, isComplete, priority?, dueDate?, createdAt, updatedAt }`.
+- IDs: `Date.now() + counter` — simple and sufficient for local storage.
+- Dates stored as `YYYY-MM-DD` (not ISO strings) to avoid UTC shifts; parsed to local midnight for UI.
+
+### Key Decisions
+- **Inline editing** in `TaskCard` with a local draft; `Esc` = cancel, `⌘/Ctrl+Enter` = save.
+- **Validation**: title ≤ 100, description ≤ 500; counters + disabled submit + subtle error state.
+- **Due date**: shadcn popover + calendar; date badge near the title; overdue = red badge + small callout.
+- **Layout resilience**: grid `minmax(0,1fr)_auto`, `min-w-0`, `truncate/line-clamp`, and safe word wrapping so very long titles don’t break cards.
+- **Performance hygiene**: stable callbacks (`useCallback`), `React.memo` where it actually helps.
+
+### Lyrical Aside
+There’s a line I like about our craft: **“we don’t finish projects, we abandon them.”**  
+I invested about **8 hours** into this. Not because the scope was huge, but because I tend to build things **deliberately**: clean types, small pure layers, and UX that feels considered. The context was also atypical for me — the last ~3 years I mostly worked without TypeScript and Tailwind, on codebases with lots of reusable pieces and settled architecture. Getting back into TS/Tailwind cost me about **an hour** just to re-groove the fundamentals.  
+I’m happy with the current result as an MVP; there’s plenty I could push further, and I list that below.
+
+### Trade-offs
+- Skipped form libraries (RHF/Zod) and DnD/filtering to keep the MVP tight and the code readable.
+- Kept persistence to `localStorage` with a versioned key; easy to swap out the repo later.
+- Focused on inline edit + validation + date UX instead of breadth of features.
+
+### What I’d Do Next (with more time)
+- Filters (All / Active / Completed, Overdue) and sorting (dueDate/priority/updatedAt).
+- Import/export JSON; storage migrations.
+- Tests: unit tests for the repo; a tiny e2e happy path.
+- Expanded a11y (aria roles/labels, full keyboard coverage) and theming/i18n.
+
+### Lessons Learned / Reaffirmed
+- Storing dates as `YYYY-MM-DD` + parsing to **local** midnight eliminates the “minus one day” trap.
+- In flexible layouts, `min-w-0` and `minmax(0,1fr)` are must-haves to stop long tokens from blowing up cards.
+- “Skeleton first, then polish” consistently beats trying to perfect everything at once.
+
+---
+
 # 60-Minute Front-End Developer Test
 
 ## Overview
